@@ -17,7 +17,28 @@
     <script>
       L.Mapzen.apiKey = 'mapzen-CFbBe8d';
       var map = L.Mapzen.map('map');
-      
+
+      map.setView([39.1535, -75.4788], 9);
+
+      new L.GeoJSON.AJAX('https://whosonfirst.mapzen.com/data/102/083/891/102083891.geojson').addTo(map);
+      new L.GeoJSON.AJAX('https://whosonfirst.mapzen.com/data/102/083/871/102083871.geojson').addTo(map);
+      new L.GeoJSON.AJAX('https://whosonfirst.mapzen.com/data/102/083/887/102083887.geojson').addTo(map);
+
+      // load the Delaware schools data
+      new L.GeoJSON.AJAX('https://data.delaware.gov/resource/f6a3-crpj.geojson', {
+        filter: function(feature) {
+          return feature.geometry != null && feature.properties.schoolyear == "2016";
+        },
+        // add an address label-style popup for each feature
+        onEachFeature: function(feature, layer) {
+          var text = '<b>' + feature.properties.schoolname + '</b><br/>';
+          text += feature.properties.street1 + '<br/>';
+          text += feature.properties.city + ', ' + feature.properties.state + '<br/>';
+          text += feature.properties.educationlevel + ' School';
+          layer.bindPopup(text);
+        }
+      }).addTo(map);
+
     </script>
   </body>
 </html>
